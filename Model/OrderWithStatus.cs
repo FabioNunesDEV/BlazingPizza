@@ -12,7 +12,7 @@ namespace BlazingPizza
 
         public string StatusText { get; set; }
 
-        public bool IsDelivered => StatusText == "Delivered";
+        public bool IsDelivered => StatusText == "Entregue";
 
         public static OrderWithStatus FromOrder(Order order)
         {
@@ -23,15 +23,15 @@ namespace BlazingPizza
 
             if (DateTime.Now < dispatchTime)
             {
-                statusText = "Preparing";
+                statusText = "Preparando";
             }
             else if (DateTime.Now < dispatchTime + DeliveryDuration)
             {
-                statusText = "Out for delivery";
+                statusText = "Para entrega";
             }
             else
             {
-                statusText = "Delivered";
+                statusText = "Entregue";
             }
 
             return new OrderWithStatus

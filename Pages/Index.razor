@@ -1,9 +1,25 @@
 @page "/"
-@using System.Text.Json
-@using BlazingPizza.Services
+
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject OrderState OrderState
+
+<div class="top-bar">
+    <a class="logo" href="">
+        <img src="img/logo.svg" />
+    </a>
+
+    <NavLink href="" class="nav-tab active">
+        <img src="img/pizza-slice.svg" />
+        <div>Peça pizza</div>
+    </NavLink>
+
+    <NavLink href="myorders" class="nav-tab">
+        <img src="img/bike.svg" />
+        <div>Meus pedidos</div>
+    </NavLink>
+
+</div>
 
 <div class="main">
     <h1>Blazing Pizzas</h1>
@@ -35,7 +51,7 @@
     @if (order.Pizzas.Any())
     {
         <div class="order-contents">
-            <h2>Your order</h2>
+            <h2>Seu pedido</h2>
 
             @foreach (var configuredPizza in order.Pizzas)
             {
@@ -51,14 +67,14 @@
     }
     else
     {
-        <div class="empty-cart">Choose a pizza<br>to get started</div>
+        <div class="empty-cart">Escolha uma pizza<br>para começar</div>
     }
 
     <div class="order-total @(order.Pizzas.Any() ? "" : "hidden")">
         Total:
         <span class="total-price">@order.GetFormattedTotalPrice()</span>
         <a href="checkout" class="@(OrderState.Order.Pizzas.Count == 0 ? "btn btn-warning disabled" : "btn btn-warning")">
-            Order >
+            Pedido >
         </a>
     </div>
 </div>
