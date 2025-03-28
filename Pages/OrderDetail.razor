@@ -1,0 +1,89 @@
+﻿@page "/myorders/{orderId:int}"
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+
+<div class="top-bar">
+    <a class="logo" href="">
+        <img src="img/logo.svg" />
+    </a>
+
+    <NavLink href="" class="nav-tab active">
+        <img src="img/pizza-slice.svg" />
+        <div>Peça pizza</div>
+    </NavLink>
+
+    <NavLink href="myorders" class="nav-tab">
+        <img src="img/bike.svg" />
+        <div>Meus pedidos</div>
+    </NavLink>
+
+</div>
+
+<div class="main">
+    @if (invalidOrder)
+    {
+        <h2>Pedido não encontrado</h2>
+        <p>Lamentamos, mas este pedido não existe mais.</p>
+    }
+    else if (orderWithStatus == null)
+    {
+        <div class="track-order">
+            <div class="track-order-title">
+                <h2>
+                    <text>Loading...</text>
+                </h2>
+                <p class="ml-auto mb-0">
+                    ...
+                </p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="track-order">
+            <div class="track-order-title">
+                <h2>
+                    Pedido feito @orderWithStatus.Order.CreatedTime.ToLongDateString()
+                </h2>
+                <p class="ml-auto mb-0">
+                    Status: <strong>@orderWithStatus.StatusText</strong>
+                </p>
+            </div>
+            <div class="track-order-body">
+                <div class="track-order-details">
+                    @foreach (var pizza in orderWithStatus.Order.Pizzas)
+                    {
+                        <p>
+                            <strong>
+                                @(pizza.Size)"
+                                @pizza.Special.Name
+                                (£@pizza.GetFormattedTotalPrice())
+                            </strong>
+                        </p>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public int OrderId { get; set; }
+
+    OrderWithStatus orderWithStatus;
+    bool invalidOrder = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            orderWithStatus = await HttpClient.GetFromJsonAsync<OrderWithStatus>(
+                $"{NavigationManager.BaseUri}orders/{OrderId}");
+        }
+        catch (Exception ex)
+        {
+            invalidOrder = true;
+            Console.Error.WriteLine(ex);
+        }
+    }
+}
